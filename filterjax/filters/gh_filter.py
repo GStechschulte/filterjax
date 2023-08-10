@@ -2,6 +2,10 @@ import jax
 import jax.numpy as jnp
 
 
+# TODO: This shouldn't be a class? There is no state here?
+#       Although, we should be able to remember the state of the system, i.e., 
+#       the params. of the system at time `t` since it can be used for
+#       online prediction.
 class GHFilter:
 
     def __init__(self, x, dx, dt, g, h):
@@ -13,7 +17,7 @@ class GHFilter:
 
     def update(self, z, g=None, h=None):
         """Performs predict-update step on the measurement 'z' and returns
-        the state of 'x' and 'dx' as a tuple.
+        the state of 'x' and 'dx'.
         """
 
         if g is None:
@@ -21,7 +25,7 @@ class GHFilter:
         if h is None:
             h = self.h
 
-        def compute(carry, y):
+        def batch(carry, y):
             x, dx = carry
             x_est = x + (dx * self.dt)
             residual = y - x_est
@@ -30,6 +34,6 @@ class GHFilter:
         
             return (x, dx), (x, dx)
 
-        _, (xs, dxs) = jax.lax.scan(compute, (self.x, self.dx), z)
+        _, (xs, dxs) = jax.lax.scan(batch, (self.x, self.dx), z)
 
         return xs, dxs

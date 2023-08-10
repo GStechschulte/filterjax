@@ -1,3 +1,3 @@
-from .gh import GHFilter
+from .filters import GHFilter, filter_1d
 
-__all__ = ["GHFilter"]
+__all__ = ["GHFilter", "filter_1d"]
