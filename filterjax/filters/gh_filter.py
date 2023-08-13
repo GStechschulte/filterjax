@@ -3,11 +3,10 @@ import jax.numpy as jnp
 
 
 # TODO: This shouldn't be a class? There is no state here?
-#       Although, we should be able to remember the state of the system, i.e., 
+#       Although, we should be able to remember the state of the system, i.e.,
 #       the params. of the system at time `t` since it can be used for
 #       online prediction.
 class GHFilter:
-
     def __init__(self, x, dx, dt, g, h):
         self.x = x
         self.dx = dx
@@ -31,7 +30,7 @@ class GHFilter:
             residual = y - x_est
             dx = dx + h * residual
             x = x_est + g * residual
-        
+
             return (x, dx), (x, dx)
 
         _, (xs, dxs) = jax.lax.scan(batch, (self.x, self.dx), z)

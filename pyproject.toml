@@ -1,0 +1,38 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+
+[project]
+name = "filterjax"
+description = "Bayesian filtering and smoothing in JAX"
+requires-python = ">=3.8"
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+maintainers = [
+    { name = "Gabriel Stechschulte", email = "stechschulteg@gmail.com" }
+]
+
+dependencies = [
+    "jax>=0.4.14"
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==22.3.0",
+    "ipython>=5.8.0,!=8.7.0",
+    "nbsphinx>=0.4.2",
+    "pre-commit>=2.19",
+    "alabaster==0.7.12",
+    "pylint==2.10.2",
+    "pytest-cov>=2.6.1",
+    "pytest>=4.4.0",
+    "sphinx>=7",
+]
+
+[tool.setuptools.dynamic]
+version = {file = "filterjax/version.txt"}
+
+[tool.black]
+line-length = 80
+target-version = ["py38", "py39", "py310"]
