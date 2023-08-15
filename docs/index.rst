@@ -10,7 +10,7 @@ Welcome to filterjax's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   examples
 
 Indices and tables
 ==================
