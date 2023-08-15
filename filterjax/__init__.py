@@ -1,3 +1,3 @@
-from .filters import GHFilter, filter_1d
+from .filters import GHFilter, KalmanFilter, KalmanParams
 
-__all__ = ["GHFilter", "filter_1d"]
+__all__ = ["GHFilter", "KalmanFilter", "KalmanParams"]
