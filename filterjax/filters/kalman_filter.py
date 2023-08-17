@@ -5,24 +5,66 @@ from jax import numpy as jnp
 
 
 class KalmanParams(NamedTuple):
-    """
-    Parameters for the Kalman filter
+    """Parameters for the Kalman filter.
+
+    Parameters
+    ----------
+    m : jnp.ndarray
+        Mean of the prior state estimate.
+    F : jnp.ndarray
+        State transition matrix.
+    H : jnp.ndarray
+        Observation (emission) matrix.
+    R : jnp.ndarray
+        Covariance matrix of the observation (emission) noise.
+    Q : jnp.ndarray
+        Covariance matrix of the process model (dynamics) noise.
+    P : jnp.ndarray
+        Covariance matrix of the prior state estimate.
+    B : jnp.ndarray, optional
+        Control transition matrix, by default None
     """
 
-    x: jnp.ndarray
+    m: jnp.ndarray 
     F: jnp.ndarray
-    H: jnp.ndarray
+    H: jnp.ndarray 
     R: jnp.ndarray
     Q: jnp.ndarray
     P: jnp.ndarray
+    B: jnp.ndarray = None
+
+
+class PosteriorFilter(NamedTuple):
+    """Posterior state estimate and covariance matrix.
+
+    Parameters
+    ----------
+    m : jnp.ndarray
+        Mean of the posterior state estimate.
+    P : jnp.ndarray
+        Covariance of the posterior state estimate.
+    """
+
+    mean: jnp.ndarray
+    covariance: jnp.ndarray
 
 
 class KalmanFilter:
-    def __init__(self, dim_x, dim_z):
-        self.dim_z = dim_z
-        self.dim_x = dim_x
+    def __init__(self, dim_m, dim_y):
+        self.dim_y = dim_y
+        self.dim_m = dim_m
 
     def initialize(self, params: KalmanParams):
+        assert params.m.shape == (self.dim_m,)
+        assert params.F.shape == (self.dim_m, self.dim_m)
+        assert params.H.shape == (self.dim_y, self.dim_m)
+        assert params.R.shape == (self.dim_y, self.dim_y)
+        assert params.Q.shape == (self.dim_m, self.dim_m)
+        assert params.P.shape == (self.dim_m, self.dim_m)
+
+        if params.B is not None:
+            assert params.B.shape == (self.dim_m, self.dim_m)
+
         return params
 
     def filter(self, params: KalmanParams, measurements: jnp.ndarray):
@@ -43,11 +85,12 @@ def predict(F, Q, x, P, B=None, u=None):
     return x, P
 
 
-def update(z, x, R, H, P):
+def update(y, x, R, H, P):
     """
-    Observe new measurement 'z' and update state.
+    Observe new measurement (emission) 'y' and update state.
     """
-    error = z - (H @ x)
+    error = y - (H @ x)
+    # TODO: Use Cholesky decomposition (better numerical stability) for covariance
     S = H @ P @ H.T + R
     K = P @ H.T @ jnp.linalg.inv(S)
     x = x + K @ error
@@ -56,20 +99,20 @@ def update(z, x, R, H, P):
     return x, P
 
 
-def batch_filter(params: KalmanParams, z: jnp.ndarray):
+def batch_filter(params: KalmanParams, y: jnp.ndarray):
 
-    num_timesteps = len(z)
+    num_timesteps = len(y)
 
     def step(carry, t):
-        x, P = carry
+        m, P = carry
 
-        x, P = update(z[t], x, params.R, params.H, P)
-        x, P = predict(params.F, params.Q, x, P)
+        m, P = update(y[t], m, params.R, params.H, P)
+        m, P = predict(params.F, params.Q, m, P)
 
-        return (x, P), (x, P)
+        return (m, P), (m, P)
 
-    _, (xs, Ps) = jax.lax.scan(
-        step, (params.x, params.P), jnp.arange(num_timesteps)
+    _, (ms, Ps) = jax.lax.scan(
+        step, (params.m, params.P), jnp.arange(num_timesteps)
     )
 
-    return xs, Ps
+    return PosteriorFilter(ms, Ps)
