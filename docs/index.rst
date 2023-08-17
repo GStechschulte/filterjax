@@ -3,8 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to filterjax's documentation!
+Welcome to filterjax!
 =====================================
+
+filterjax is a Python package for performing Bayesian filtering and smoothing in JAX.
+
+Installation and Testing
+------------------------
+
+To install filterjax...
 
 .. toctree::
    :maxdepth: 2
