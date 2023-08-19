@@ -13,11 +13,17 @@ Installation and Testing
 
 To install filterjax...
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Tutorials
+=========
 
-   examples
+The tutorials below will introduce you to Kalman Filters in filterjax.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Kalman Filter:
+
+   notebooks/dog_sensor.ipynb
+   .. examples
 
 Indices and tables
 ==================
