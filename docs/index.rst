@@ -22,7 +22,7 @@ The tutorials below will introduce you to Kalman Filters in filterjax.
    :maxdepth: 1
    :caption: Kalman Filter:
 
-   notebooks/dog_sensor.ipynb
+   notebooks/tracking_objects.ipynb
    .. examples
 
 Indices and tables
