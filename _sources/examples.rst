@@ -4,4 +4,4 @@ Examples
 .. toctree::
   :maxdepth: 1
 
-  notebooks/dog_sensor
+  notebooks/tracking_objects.ipynb
