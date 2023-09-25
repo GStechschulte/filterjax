@@ -51,8 +51,8 @@ class PosteriorFilter(NamedTuple):
 
 class KalmanFilter:
     def __init__(self, dim_m, dim_y):
-        self.dim_y = dim_y
         self.dim_m = dim_m
+        self.dim_y = dim_y
 
     def initialize(self, params: KalmanParams):
         assert params.m.shape == (self.dim_m,)
@@ -90,7 +90,7 @@ def update(y, x, R, H, P):
     Observe new measurement (emission) 'y' and update state.
     """
     error = y - (H @ x)
-    # TODO: Use Cholesky decomposition (better numerical stability) for covariance
+    # TODO: Use Cholesky decomposition for covariance
     S = H @ P @ H.T + R
     K = P @ H.T @ jnp.linalg.inv(S)
     x = x + K @ error
