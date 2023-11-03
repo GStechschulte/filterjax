@@ -1,4 +1,4 @@
-from .filters import GHFilter, KalmanFilter, KalmanParams
+from .models import KalmanFilter
 from .plotting import plot_posterior_covariance
 
-__all__ = ["GHFilter", "KalmanFilter", "KalmanParams", "plot_posterior_covariance"]
+__all__ = ["KalmanFilter", "plot_posterior_covariance"]

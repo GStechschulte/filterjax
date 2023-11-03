@@ -20,7 +20,7 @@ The tutorials below will introduce you to Kalman Filters in filterjax.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Kalman Filter:
+   :caption: Kalman Filter (Linear Dynamics):
 
    notebooks/tracking_objects.ipynb
    .. examples

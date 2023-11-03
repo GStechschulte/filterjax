@@ -3,7 +3,9 @@ from matplotlib.patches import Ellipse, transforms
 import jax.numpy as jnp
 
 
-def plot_ellipse(Sigma, mu, ax, n_std=3.0, facecolor="none", edgecolor="k", **kwargs):
+def plot_ellipse(
+    Sigma, mu, ax, n_std=3.0, facecolor="none", edgecolor="k", **kwargs
+):
     """Plot an ellipse to with centre `mu` and axes defined by `Sigma`."""
     cov = Sigma
     pearson = cov[0, 1] / jnp.sqrt(cov[0, 0] * cov[1, 1])
@@ -17,7 +19,12 @@ def plot_ellipse(Sigma, mu, ax, n_std=3.0, facecolor="none", edgecolor="k", **kw
     #     kwargs['edgecolor'] = 'k'
 
     ellipse = Ellipse(
-        (0, 0), width=ell_radius_x * 2, height=ell_radius_y * 2, facecolor=facecolor, edgecolor=edgecolor, **kwargs
+        (0, 0),
+        width=ell_radius_x * 2,
+        height=ell_radius_y * 2,
+        facecolor=facecolor,
+        edgecolor=edgecolor,
+        **kwargs,
     )
 
     scale_x = jnp.sqrt(cov[0, 0]) * n_std
@@ -26,7 +33,12 @@ def plot_ellipse(Sigma, mu, ax, n_std=3.0, facecolor="none", edgecolor="k", **kw
     scale_y = jnp.sqrt(cov[1, 1]) * n_std
     mean_y = mu[1]
 
-    transf = transforms.Affine2D().rotate_deg(45).scale(scale_x, scale_y).translate(mean_x, mean_y)
+    transf = (
+        transforms.Affine2D()
+        .rotate_deg(45)
+        .scale(scale_x, scale_y)
+        .translate(mean_x, mean_y)
+    )
 
     ellipse.set_transform(transf + ax.transData)
 
@@ -39,7 +51,14 @@ def plot_uncertainty_ellipses(means, Sigmas, ax, n_std=3.0, **kwargs):
         plot_ellipse(Sigma, mu, ax, n_std, **kwargs)
 
 
-def plot_posterior_covariance(post_means, post_covs, ax=None, ellipse_kwargs={}, legend_kwargs={}, **kwargs):
+def plot_posterior_covariance(
+    post_means,
+    post_covs,
+    ax=None,
+    ellipse_kwargs={},
+    legend_kwargs={},
+    **kwargs,
+):
     """Plot posterior means and covariances for the first two dimensions of
      the latent state of a LGSSM.
 
