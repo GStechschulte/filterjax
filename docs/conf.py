@@ -41,6 +41,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 
 html_theme = 'sphinx_book_theme'
+html_logo = "logos/filterjax_dalle.png"
 html_title = "filterjax"
 html_theme_options = {
     'repository_url': 'https://github.com/GStechschulte/filterjax',

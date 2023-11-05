@@ -168,7 +168,7 @@ def batch_filter(
         m, P = _update(emissions[t], m, params.R, params.H, P)
         m, P = _predict(params.F, params.Q, m, P)
         ll += _log_likelihood(emissions[t], m, P)
-
+        
         return (ll, m, P), (m, P)
 
     ll = 0.0
