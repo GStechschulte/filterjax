@@ -92,7 +92,7 @@ def plot_posterior_covariance(
 
     ax.axis("equal")
 
-    if "label" in kwargs:
-        ax.legend(**legend_kwargs)
+    if "label" in legend_kwargs:
+        ax.set_label(legend_kwargs["label"])
 
     return ax

@@ -121,7 +121,7 @@ def _predict(F, Q, m, P, B=None, u=None):
     return m, P
 
 
-def _log_likelihood(y, m, P):
+def _log_likelihood(y, m, R, H, P):
     """Computes the log-likelihood of a new linear Gaussian observation given
     the current state mean and covariance.
 
@@ -131,6 +131,10 @@ def _log_likelihood(y, m, P):
         Emissions (measurement) vector.
     m : jnp.ndarray
         Mean of the prior state estimate.
+    R : jnp.ndarray
+        Covariance matrix of the emission (observation) noise.
+    H : jnp.ndarray
+        Emission (observation) matrix.
     P : jnp.ndarray
         Covariance matrix of the prior state estimate.
 
@@ -139,7 +143,17 @@ def _log_likelihood(y, m, P):
     log_likelihood : float
         Log-likelihood of the observation.
     """
-    return multivariate_normal.logpdf(y, mean=m, cov=P)
+    # map state space to observation space
+    m = H @ m
+    if R.ndim == 2:
+        # map state covariance to observation covariance
+        S = R + H @ P @ H.T
+        return multivariate_normal.logpdf(y, m, S)
+
+    # TODO: use low rank MVN if R.ndim > 2
+    return NotImplementedError(
+        f"Computing log-likelihood when R.ndim = {R.ndim} is not supported."
+    )
 
 
 def batch_filter(
@@ -167,7 +181,7 @@ def batch_filter(
 
         m, P = _update(emissions[t], m, params.R, params.H, P)
         m, P = _predict(params.F, params.Q, m, P)
-        ll += _log_likelihood(emissions[t], m, P)
+        ll += _log_likelihood(emissions[t], m, params.R, params.H, P)
         
         return (ll, m, P), (m, P)
 
